@@ -42,8 +42,9 @@ registerBlockType( 'cgb/block-creole-demo', {
 	],
 	attributes: {
 		posts: {
-			type: 'array',
-			value: '',
+			type: 'text',
+			 quote: '', 
+			 author: '',
 		},
 	},
 
@@ -110,6 +111,9 @@ registerBlockType( 'cgb/block-creole-demo', {
 
 		}
 		
+		if(posts.length){
+			const { quote, author } = posts;
+		}
 		
 
 		return (
