@@ -9,7 +9,7 @@
 import './editor.scss';
 import './style.scss';
 import apiFetch from '@wordpress/api-fetch';
-import {fetch} from 'node-fetch';
+
  
 
 // import './bootstrap.css';
@@ -61,36 +61,69 @@ registerBlockType( 'cgb/block-creole-demo', {
 	edit: ( props ) => {
 		// Creates a <p className='wp-block-cgb-block-creole-demo'></p>.
 		// GET
+		const QuoteBlock = function QuoteBlock({quote, author}) {
+		    return (
+		        <div className="container">
+					<section>
+						<h1>Hello</h1>
+						<div className="row">
+							<div className="col-sm-3"></div>
+							<div className="col-sm-6">
+								<div className="card">
+								<div className="card-body mx-auto">
+									<h4 className="card-title text-center">-: Click or Refresh To See new Quotes :-</h4>
+									<h5 className="card-text qoute mt-4">{ quote }Loading.........</h5>
+									<p className="card-text"><strong>Author:</strong> <span className="author-name">{ author }Loading...............</span></p>
+									<a href="#" className="btn btn-primary get-new-quote btn-block" onClick={ getNewContent }>Get New Quote</a>
+								</div>
+								</div>
+							</div>
+							<div className="col-sm-3"></div>
+							
+						</div>
+					</section>
+				</div>
+		    )
+		}
 		const { attributes: { posts }, setAttributes } = props;
 		const getNewContent = ( )=> {
-			apiFetch( { path: '/wp/v2/posts' } ).then( postss => {
-			    setAttributes({posts: {value: postss} });
-			} );
+			fetch('https://vanpariyar.github.io/get-new-quote/rendomQuote.json', {
+			     mode: 'cors',
+			}) 
+			.then(response => response.json())
+  			.then(data => {
+  				setAttributes({posts: {value: data} });
+  				console.log(JSON.stringify(data))
+  			});
 		}
-		console.log(posts); 		
-		return (
-			<div className="container">
-				<section>
-					<h1>Hello</h1>
-					<div className="row">
-						<div className="col-sm-3"></div>
-						<div className="col-sm-6">
-							<div className="card">
-							<div className="card-body mx-auto">
-								<h4 className="card-title text-center">-: Click or Refresh To See new Quotes :-</h4>
-								<h5 className="card-text qoute mt-4">Loading.........</h5>
-								<p className="card-text"><strong>Author:</strong> <span className="author-name">Loading...............</span></p>
-								<a href="#" className="btn btn-primary get-new-quote btn-block" onClick={ getNewContent }>Get New Quote</a>
-							</div>
-							{posts.value.map}
+		console.log(`This is post`,posts);
 
-							</div>
-						</div>
-						<div className="col-sm-3"></div>
-					</div>
-				</section>
-			</div>
-		);
+		if(posts){
+			const min = 1;
+			const max = 103;
+			function getRandomIntInclusive(min, max) {
+				min = Math.ceil(min);
+				max = Math.floor(max);
+				return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+			}
+
+			const quote = posts.value[getRandomIntInclusive(min, max)];
+			console.log(`this is qoute`,quote);
+		}
+		if(posts){
+			return (
+				<div>
+				  <QuoteBlock quote={quote.quote} author={quote.author}/>
+				</div>  
+			);
+		}else{
+			return (
+				<div>
+				  <QuoteBlock quote="Loading... .. ." author="Loading... .. ." />
+				</div>  
+			);
+		}	
+		
 	},
 
 	/**
