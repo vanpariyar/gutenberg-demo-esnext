@@ -86,43 +86,37 @@ registerBlockType( 'cgb/block-creole-demo', {
 		    )
 		}
 		const { attributes: { posts }, setAttributes } = props;
-		const getNewContent = ( )=> {
+		const getNewContent = ( ) => {
 			fetch('https://vanpariyar.github.io/get-new-quote/rendomQuote.json', {
 			     mode: 'cors',
 			}) 
 			.then(response => response.json())
   			.then(data => {
-  				setAttributes({posts: {value: data} });
-  				console.log(JSON.stringify(data))
+  				
+  				const min = 1;
+				const max = 103;
+				function getRandomIntInclusive(min, max) {
+					min = Math.ceil(min);
+					max = Math.floor(max);
+					return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+				}
+				console.log(`This is function`);
+				
+				var data = data[getRandomIntInclusive(min, max)];
+				const quote = data.quote;
+				const author = data.author;
+				setAttributes({posts:{ quote: quote, author: author }})
   			});
-		}
-		console.log(`This is post`,posts);
 
-		if(posts){
-			const min = 1;
-			const max = 103;
-			function getRandomIntInclusive(min, max) {
-				min = Math.ceil(min);
-				max = Math.floor(max);
-				return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
-			}
-
-			const quote = posts.value[getRandomIntInclusive(min, max)];
-			console.log(`this is qoute`,quote);
 		}
-		if(posts){
-			return (
-				<div>
-				  <QuoteBlock quote={quote.quote} author={quote.author}/>
-				</div>  
-			);
-		}else{
-			return (
-				<div>
-				  <QuoteBlock quote="Loading... .. ." author="Loading... .. ." />
-				</div>  
-			);
-		}	
+		
+		
+
+		return (
+			<div>
+			  <QuoteBlock quote={ quote } author={ quote }/>
+			</div>  
+		);	
 		
 	},
 
