@@ -8,9 +8,11 @@
 //  Import CSS.
 import './editor.scss';
 import './style.scss';
+import { Button, SelectControl } from "@wordpress/components";
 // import apiFetch from '@wordpress/api-fetch';
 
- 
+const { InspectorControls } = wp.editor;
+const { PanelBody, PanelRow } = wp.components;
 
 // import './bootstrap.css';
 
@@ -38,17 +40,14 @@ const QuoteBlock = function QuoteBlock({quote, author, setAttributes}) {
 			 mode: 'cors',
 		}) 
 		.then(response => response.json())
-		  .then(data => {
-			  
-			  const min = 1;
+		  .then(data => {  
+			const min = 1;
 			const max = 103;
 			function getRandomIntInclusive(min, max) {
 				min = Math.ceil(min);
 				max = Math.floor(max);
 				return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
 			}
-			console.log(`This is function`);
-			
 			var data = data[getRandomIntInclusive(min, max)];
 			const quote = data.quote;
 			const author = data.author;
@@ -58,6 +57,19 @@ const QuoteBlock = function QuoteBlock({quote, author, setAttributes}) {
 	}
 	return (
 		<div className="container">
+			<InspectorControls>
+				<PanelBody
+					title={__('OBlock Options')}
+					initialOpen={true}>
+					<PanelRow>
+						{<Button 
+							isPrimary
+							onClick={ getNewContent }>
+							{ __( 'Get New Quote' ) }    						
+						</Button>}
+					</PanelRow>
+				</PanelBody>
+			</InspectorControls>
 			<section>
 				<h1>Hello</h1>
 				<div className="row">
@@ -68,12 +80,10 @@ const QuoteBlock = function QuoteBlock({quote, author, setAttributes}) {
 							<h4 className="card-title text-center">-: Click or Refresh To See new Quotes :-</h4>
 							<h5 className="card-text qoute mt-4">{ quote }</h5>
 							<p className="card-text"><strong>Author:</strong> <span className="author-name">{ author }</span></p>
-							<a href="#" className="btn btn-primary get-new-quote btn-block" onClick={ getNewContent }>{ __( 'Get New Quote' ) }</a>
 						</div>
 						</div>
 					</div>
 					<div className="col-sm-3"></div>
-					
 				</div>
 			</section>
 		</div>
@@ -116,7 +126,7 @@ registerBlockType( 'cgb/block-creole-demo', {
 		
 		const { attributes: { posts }, setAttributes } = props;
 
-		
+
 		if( typeof(posts) !== 'undefined' ){
 			const { quote, author } = posts;
 			return (
