@@ -110,15 +110,17 @@ registerBlockType( 'cgb/block-creole-demo', {
   			});
 
 		}
+
+		console.log(posts);
 		
-		if(posts.length){
+		if( typeof(posts) !== 'undefined' ){
 			const { quote, author } = posts;
 		}
-		
-
+		const quote;
+		quote = 2;
 		return (
 			<div>
-			  <QuoteBlock quote={ quote } author={ quote }/>
+			  <QuoteBlock quote={ quote } author={ author }/>
 			</div>  
 		);	
 		
