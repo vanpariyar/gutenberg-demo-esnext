@@ -8,16 +8,16 @@
 //  Import CSS.
 import './editor.scss';
 import './style.scss';
-import { Button, SelectControl } from "@wordpress/components";
+import { Button, SelectControl, TextControl } from "@wordpress/components";
 // import apiFetch from '@wordpress/api-fetch';
 
 const { InspectorControls } = wp.blockEditor;
 const { PanelBody, PanelRow } = wp.components;
 import { RichText, AlignmentToolbar, BlockControls, } from '@wordpress/block-editor';
 // import './bootstrap.css';
-
+ 
 const { __ } = wp.i18n; // Import __() from wp.i18n
-const { registerBlockType } = wp.blocks; // Import registerBlockType() from wp.blocks
+const { registerBlockType, useEffect } = wp.blocks; // Import registerBlockType() from wp.blocks
 
 /**
  * Register: aa Gutenberg Block.
@@ -34,7 +34,7 @@ const { registerBlockType } = wp.blocks; // Import registerBlockType() from wp.b
  */
 
 
-const QuoteBlock = function QuoteBlock({quote, author, setAttributes}) {
+const QuoteBlock = function QuoteBlock({quote, author, setAttributes, title}) {
 	const getNewContent = ( ) => {
 		fetch('https://vanpariyar.github.io/get-new-quote/rendomQuote.json', {
 			 mode: 'cors',
@@ -55,6 +55,11 @@ const QuoteBlock = function QuoteBlock({quote, author, setAttributes}) {
 		  });
 
 	}
+	const changeTitle = ( title ) => {
+
+		setAttributes({posts:{ title: title }});
+	}
+	
 	return (
 		<div className="container">
 			<InspectorControls>
@@ -67,11 +72,18 @@ const QuoteBlock = function QuoteBlock({quote, author, setAttributes}) {
 							onClick={ getNewContent }>
 							{ __( 'Get New Quote' ) }    						
 						</Button>}
+						<TextControl
+							label="Additional CSS Class"
+							value={ title }
+							onChange={ ( className ) => setAttributes( { className } ) }
+						/>
+					</PanelRow>
+					<PanelRow >
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
 			<section>
-				<h1>Hello</h1>
+				<h1> { title } </h1>
 				<div className="row">
 					<div className="col-sm-3"></div>
 					<div className="col-sm-6">
@@ -103,8 +115,10 @@ registerBlockType( 'cgb/block-creole-demo', {
 	attributes: {
 		posts: {
 			type: 'text',
+			title: '',
 			quote: '', 
 			author: '',
+			title:'',
 		},
 	},
 
@@ -127,9 +141,9 @@ registerBlockType( 'cgb/block-creole-demo', {
 
 
 		if( typeof(posts) !== 'undefined' ){
-			const { quote, author } = posts;
+			const { quote, author, title } = posts;
 			return (
-			  <QuoteBlock quote={ quote } author={ author } setAttributes={ setAttributes }/>
+			  <QuoteBlock quote={ quote } author={ author } setAttributes={ setAttributes } title={ title }/>
 			);
 		}else{
 			return (
@@ -153,7 +167,7 @@ registerBlockType( 'cgb/block-creole-demo', {
 	save: ( props ) => {
 		const { attributes: { posts } } = props;
 		if( typeof(posts) !== 'undefined' ){
-			const { quote, author } = posts;
+			const { quote, author , title } = posts;
 			return (
 			  <QuoteBlock quote={ quote } author={ author }/>
 			);
