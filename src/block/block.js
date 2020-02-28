@@ -11,9 +11,9 @@ import './style.scss';
 import { Button, SelectControl } from "@wordpress/components";
 // import apiFetch from '@wordpress/api-fetch';
 
-const { InspectorControls } = wp.editor;
+const { InspectorControls } = wp.blockEditor;
 const { PanelBody, PanelRow } = wp.components;
-
+import { RichText, AlignmentToolbar, BlockControls, } from '@wordpress/block-editor';
 // import './bootstrap.css';
 
 const { __ } = wp.i18n; // Import __() from wp.i18n
@@ -41,13 +41,13 @@ const QuoteBlock = function QuoteBlock({quote, author, setAttributes}) {
 		}) 
 		.then(response => response.json())
 		  .then(data => {  
-			const min = 1;
-			const max = 103;
 			function getRandomIntInclusive(min, max) {
 				min = Math.ceil(min);
 				max = Math.floor(max);
 				return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
 			}
+			const min = 1;
+			const max = data.length + min;
 			var data = data[getRandomIntInclusive(min, max)];
 			const quote = data.quote;
 			const author = data.author;
@@ -59,7 +59,7 @@ const QuoteBlock = function QuoteBlock({quote, author, setAttributes}) {
 		<div className="container">
 			<InspectorControls>
 				<PanelBody
-					title={__('OBlock Options')}
+					title={__('Block Options')}
 					initialOpen={true}>
 					<PanelRow>
 						{<Button 
@@ -77,9 +77,8 @@ const QuoteBlock = function QuoteBlock({quote, author, setAttributes}) {
 					<div className="col-sm-6">
 						<div className="card">
 						<div className="card-body mx-auto">
-							<h4 className="card-title text-center">-: Click or Refresh To See new Quotes :-</h4>
 							<h5 className="card-text qoute mt-4">{ quote }</h5>
-							<p className="card-text"><strong>Author:</strong> <span className="author-name">{ author }</span></p>
+							<p className="card-text"><strong>{ __('Author:') }</strong> <span className="author-name">{ author }</span></p>
 						</div>
 						</div>
 					</div>
@@ -134,7 +133,7 @@ registerBlockType( 'cgb/block-creole-demo', {
 			);
 		}else{
 			return (
-			  <QuoteBlock quote={ 'Loading.. .' } author={ 'Loading.. .' } setAttributes={ setAttributes }/>
+			  <QuoteBlock quote={ 'Click the Get New Quote Button On sidebar ->' } author={ '' } setAttributes={ setAttributes }/>
 			);
 		}
 		
@@ -160,7 +159,7 @@ registerBlockType( 'cgb/block-creole-demo', {
 			);
 		}else{
 			return (
-			  <QuoteBlock quote={ 'Loading.. .' } author={ 'Loading.. .' }/>
+			  <QuoteBlock quote={ 'Click the Get New Quote Button On sidebar ->' } author={ '' }/>
 			);
 		}
 	},
