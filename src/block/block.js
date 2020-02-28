@@ -8,7 +8,7 @@
 //  Import CSS.
 import './editor.scss';
 import './style.scss';
-import apiFetch from '@wordpress/api-fetch';
+// import apiFetch from '@wordpress/api-fetch';
 
  
 
@@ -30,6 +30,57 @@ const { registerBlockType } = wp.blocks; // Import registerBlockType() from wp.b
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
+
+
+const QuoteBlock = function QuoteBlock({quote, author, setAttributes}) {
+	const getNewContent = ( ) => {
+		fetch('https://vanpariyar.github.io/get-new-quote/rendomQuote.json', {
+			 mode: 'cors',
+		}) 
+		.then(response => response.json())
+		  .then(data => {
+			  
+			  const min = 1;
+			const max = 103;
+			function getRandomIntInclusive(min, max) {
+				min = Math.ceil(min);
+				max = Math.floor(max);
+				return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+			}
+			console.log(`This is function`);
+			
+			var data = data[getRandomIntInclusive(min, max)];
+			const quote = data.quote;
+			const author = data.author;
+			setAttributes({posts:{ quote: quote, author: author }})
+		  });
+
+	}
+	return (
+		<div className="container">
+			<section>
+				<h1>Hello</h1>
+				<div className="row">
+					<div className="col-sm-3"></div>
+					<div className="col-sm-6">
+						<div className="card">
+						<div className="card-body mx-auto">
+							<h4 className="card-title text-center">-: Click or Refresh To See new Quotes :-</h4>
+							<h5 className="card-text qoute mt-4">{ quote }</h5>
+							<p className="card-text"><strong>Author:</strong> <span className="author-name">{ author }</span></p>
+							<a href="#" className="btn btn-primary get-new-quote btn-block" onClick={ getNewContent }>{ __( 'Get New Quote' ) }</a>
+						</div>
+						</div>
+					</div>
+					<div className="col-sm-3"></div>
+					
+				</div>
+			</section>
+		</div>
+	)
+}
+
+
 registerBlockType( 'cgb/block-creole-demo', {
 	// Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
 	title: __( 'creole-demo - CGB Block' ), // Block title.
@@ -43,8 +94,8 @@ registerBlockType( 'cgb/block-creole-demo', {
 	attributes: {
 		posts: {
 			type: 'text',
-			 quote: '', 
-			 author: '',
+			quote: '', 
+			author: '',
 		},
 	},
 
@@ -62,67 +113,20 @@ registerBlockType( 'cgb/block-creole-demo', {
 	edit: ( props ) => {
 		// Creates a <p className='wp-block-cgb-block-creole-demo'></p>.
 		// GET
-		const QuoteBlock = function QuoteBlock({quote, author}) {
-		    return (
-		        <div className="container">
-					<section>
-						<h1>Hello</h1>
-						<div className="row">
-							<div className="col-sm-3"></div>
-							<div className="col-sm-6">
-								<div className="card">
-								<div className="card-body mx-auto">
-									<h4 className="card-title text-center">-: Click or Refresh To See new Quotes :-</h4>
-									<h5 className="card-text qoute mt-4">{ quote }Loading.........</h5>
-									<p className="card-text"><strong>Author:</strong> <span className="author-name">{ author }Loading...............</span></p>
-									<a href="#" className="btn btn-primary get-new-quote btn-block" onClick={ getNewContent }>Get New Quote</a>
-								</div>
-								</div>
-							</div>
-							<div className="col-sm-3"></div>
-							
-						</div>
-					</section>
-				</div>
-		    )
-		}
+		
 		const { attributes: { posts }, setAttributes } = props;
-		const getNewContent = ( ) => {
-			fetch('https://vanpariyar.github.io/get-new-quote/rendomQuote.json', {
-			     mode: 'cors',
-			}) 
-			.then(response => response.json())
-  			.then(data => {
-  				
-  				const min = 1;
-				const max = 103;
-				function getRandomIntInclusive(min, max) {
-					min = Math.ceil(min);
-					max = Math.floor(max);
-					return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
-				}
-				console.log(`This is function`);
-				
-				var data = data[getRandomIntInclusive(min, max)];
-				const quote = data.quote;
-				const author = data.author;
-				setAttributes({posts:{ quote: quote, author: author }})
-  			});
 
-		}
-
-		console.log(posts);
 		
 		if( typeof(posts) !== 'undefined' ){
 			const { quote, author } = posts;
+			return (
+			  <QuoteBlock quote={ quote } author={ author } setAttributes={ setAttributes }/>
+			);
+		}else{
+			return (
+			  <QuoteBlock quote={ 'Loading.. .' } author={ 'Loading.. .' } setAttributes={ setAttributes }/>
+			);
 		}
-		const quote;
-		quote = 2;
-		return (
-			<div>
-			  <QuoteBlock quote={ quote } author={ author }/>
-			</div>  
-		);	
 		
 	},
 
@@ -138,26 +142,16 @@ registerBlockType( 'cgb/block-creole-demo', {
 	 * @returns {Mixed} JSX Frontend HTML.
 	 */
 	save: ( props ) => {
-		return (
-			<div className="container">
-				<section>
-					<h1>Hello</h1>
-					<div className="row">
-						<div className="col-sm-3"></div>
-						<div className="col-sm-6">
-							<div className="card">
-							<div className="card-body mx-auto">
-								<h4 className="card-title text-center">-: Click or Refresh To See new Quotes :-</h4>
-								<h5 className="card-text qoute mt-4">Loading.........</h5>
-								<p className="card-text"><strong>Author:</strong> <span className="author-name">Loading...............</span></p>
-								<a href="#" className="btn btn-primary get-new-quote btn-block">Get New Quote</a>
-							</div>
-							</div>
-						</div>
-						<div className="col-sm-3"></div>
-					</div>
-				</section>
-			</div>
-		);
+		const { attributes: { posts } } = props;
+		if( typeof(posts) !== 'undefined' ){
+			const { quote, author } = posts;
+			return (
+			  <QuoteBlock quote={ quote } author={ author }/>
+			);
+		}else{
+			return (
+			  <QuoteBlock quote={ 'Loading.. .' } author={ 'Loading.. .' }/>
+			);
+		}
 	},
 } );
